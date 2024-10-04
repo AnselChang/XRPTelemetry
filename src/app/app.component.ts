@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { WebsocketService } from './services/websocket.service';
+import { TelemetryService } from './services/telemetry.service';
+import { CharStreamHandler } from './util/char-stream-handler';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +10,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'XRPTelemetry2';
+
+  constructor(
+    private telemetryService: TelemetryService,
+  ) {
+  }
+
 }
