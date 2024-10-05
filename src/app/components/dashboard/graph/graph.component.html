@@ -1,7 +1,7 @@
 <div class="graph">
     <div class="channels">
-        <app-graph-channel *ngFor="let channel of data.getChannelNames()"
-        [channel]="channel" [(visible)]="visibleChannels[channel]" />
+        <app-graph-channel *ngFor="let channel of data.getChannelNames()" (click)="toggleChannelVisibility(channel)" [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)"
+        [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)" />
     </div>
     <div class="content">
 

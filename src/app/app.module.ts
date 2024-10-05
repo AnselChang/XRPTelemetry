@@ -11,6 +11,7 @@ import { ExercisesPageComponent } from './components/exercises/exercises-page/ex
 import { GraphComponent } from './components/dashboard/graph/graph.component';
 import { ChannelPanelComponent } from './components/dashboard/channel-panel/channel-panel.component';
 import { GraphChannelComponent } from './components/dashboard/graph/graph-channel/graph-channel.component';
+import { StatusComponent } from './components/sidebar/status/status.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { GraphChannelComponent } from './components/dashboard/graph/graph-channe
     ExercisesPageComponent,
     GraphComponent,
     ChannelPanelComponent,
-    GraphChannelComponent
+    GraphChannelComponent,
+    StatusComponent
   ],
   imports: [
     BrowserModule,

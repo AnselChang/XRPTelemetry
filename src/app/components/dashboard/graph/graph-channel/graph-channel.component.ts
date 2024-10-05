@@ -9,12 +9,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 export class GraphChannelComponent {
   @Input() channel!: string;
   @Input() visible: boolean = true;
-  @Output() visibleChange = new EventEmitter<boolean>();
-
-  // on click, toggle visibility
-  onClick() {
-    this.visible = !this.visible;
-    this.visibleChange.emit(this.visible);
-  }
 
 }
