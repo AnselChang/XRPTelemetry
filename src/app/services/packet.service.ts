@@ -9,7 +9,7 @@ import { DataPacket, MetadataPacket, Packet, PacketType, StartPacket } from '../
 })
 export class PacketService {
 
-  private packet$ = new Subject<Packet>();
+  private packets$ = new Subject<Packet[]>();
 
   constructor(
     private readonly websocketService: WebsocketService,
@@ -19,17 +19,22 @@ export class PacketService {
     this.websocketService.onMessage$().subscribe((message) => this.decodePackets(message));
   }
 
-  public onPacket$(): Observable<Packet> {
-    return this.packet$.asObservable();
+  public onPacket$(): Observable<Packet[]> {
+    return this.packets$.asObservable();
   }
 
-  private decodePackets(packets: number[]) {
+  private decodePackets(rawPackets: number[]) {
+
+    const packets: Packet[] = [];
 
     // Decode packets
-    while (packets.length > 0) {
-      const packet = this.consumePacket(packets);
-      this.packet$.next(packet);
+    while (rawPackets.length > 0) {
+      console.log(rawPackets);
+      const packet = this.consumePacket(rawPackets);
+      console.log(packet);
+      packets.push(packet);
     }
+    this.packets$.next(packets);
   }
 
   private consumePacket(packets: number[]): Packet {

@@ -1,0 +1,11 @@
+<div class="dashboard">
+    <!-- <div class="panels">
+        <app-channel-panel title="Channel 1" color="#FF0000"></app-channel-panel>
+        <app-channel-panel title="Channel 2" color="#00FF00"></app-channel-panel>
+        <app-channel-panel title="Channel 3" color="#0000FF"></app-channel-panel>
+        <app-channel-panel title="Channel 4" color="#FFFF00"></app-channel-panel>
+        <app-channel-panel title="Channel 5" color="#FF00FF"></app-channel-panel>
+        <app-channel-panel title="Channel 6" color="#00FFFF"></app-channel-panel>
+    </div> -->
+    <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" />
+</div>

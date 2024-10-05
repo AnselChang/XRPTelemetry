@@ -8,6 +8,9 @@ import { ContentComponent } from './components/content/content.component';
 import { SidebarTabComponent } from './components/sidebar-tab/sidebar-tab.component';
 import { DashboardPageComponent } from './components/dashboard/dashboard-page/dashboard-page.component';
 import { ExercisesPageComponent } from './components/exercises/exercises-page/exercises-page.component';
+import { GraphComponent } from './components/dashboard/graph/graph.component';
+import { ChannelPanelComponent } from './components/dashboard/channel-panel/channel-panel.component';
+import { GraphChannelComponent } from './components/dashboard/graph/graph-channel/graph-channel.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { ExercisesPageComponent } from './components/exercises/exercises-page/ex
     ContentComponent,
     SidebarTabComponent,
     DashboardPageComponent,
-    ExercisesPageComponent
+    ExercisesPageComponent,
+    GraphComponent,
+    ChannelPanelComponent,
+    GraphChannelComponent
   ],
   imports: [
     BrowserModule,

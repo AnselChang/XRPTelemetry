@@ -1,0 +1,9 @@
+<div class="graph">
+    <div class="channels">
+        <app-graph-channel *ngFor="let channel of data.getChannelNames()"
+        [channel]="channel" [(visible)]="visibleChannels[channel]" />
+    </div>
+    <div class="content">
+
+    </div>
+</div>

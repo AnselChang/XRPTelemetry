@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar-tab',
   templateUrl: './sidebar-tab.component.html',
-  styleUrls: ['./sidebar-tab.component.scss']
+  styleUrls: ['./sidebar-tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarTabComponent {
   @Input() link!: string;
@@ -11,7 +12,7 @@ export class SidebarTabComponent {
   @Input() icon!: string;
 
   onTabClick() {
-    
+
   }
 
 }

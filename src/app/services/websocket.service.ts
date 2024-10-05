@@ -47,6 +47,7 @@ export class WebsocketService {
 
     this.socket.onmessage = (event) => {
       const bytes = this.encoder.encode(event.data);
+      console.log("WebSocket message received: ", bytes, event.data);
       for (const byte of bytes) this.streamHandler.addChar(byte);
     };
 

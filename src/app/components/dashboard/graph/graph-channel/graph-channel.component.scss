@@ -1,0 +1,39 @@
+@import "../../../../../styles.scss";
+
+.channel {
+    background-color: $light;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+    padding-block: 3px;
+    padding-left: 10px;
+    padding-right: 15px;
+    min-width: 120px;
+
+    opacity: 0.4;
+}
+
+.channel:hover {
+    opacity: 0.55;
+}
+
+.channel.visible {
+    opacity: 1;
+}
+
+.channel.visible:hover {
+    opacity: 0.85;
+}
+
+
+
+.label {
+    font-family: $main-font;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    margin: 3px;
+}

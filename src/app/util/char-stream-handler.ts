@@ -17,40 +17,47 @@ import { asciiToUint } from './convert';
  */
 
 export class CharStreamHandler {
-  private charStream = new Subject<number>();
-  private valueSequence = new Subject<number[]>();
+  private buffer: number[] = [];
+  private isEscapeMode: boolean = false;
+  private sequenceLength: number | null = null;
+  private callbacks: ((values: number[]) => void)[] = [];
 
-  constructor() {
-    this.setupSequenceHandler();
-  }
-
-  private setupSequenceHandler() {
-    this.charStream.pipe(
+  public addChar(char: number): void {
+    if (!this.isEscapeMode && char === 27) {
       // Step 1: Look for the ESC character (27)
-      filter(char => char === 27),
-
-      // Step 2: After finding ESC, buffer the next 4 characters
-      concatMap(() => this.charStream.pipe(bufferCount(4))),
-
-      // Step 3: Convert the 4-character buffer into an unsigned integer (count)
-      map(asciiToUint),
-
+      this.isEscapeMode = true;
+      this.buffer = [];
+    } else if (this.isEscapeMode && this.sequenceLength === null) {
+      // Step 2: Buffer the next 4 characters after ESC
+      this.buffer.push(char);
+      if (this.buffer.length === 4) {
+        // Step 3: Convert the 4-character buffer into an unsigned integer (count)
+        this.sequenceLength = asciiToUint(this.buffer);
+        console.log(`Detected sequence length: ${this.sequenceLength}`);
+        this.buffer = [];
+      }
+    } else if (this.isEscapeMode && this.sequenceLength !== null) {
       // Step 4: Buffer the exact number of characters as specified by 'count'
-      concatMap(count => this.charStream.pipe(bufferCount(count)))
-    )
-    // Step 5: Process the buffered sequence
-    .subscribe(this.handleValueSequence.bind(this));
+      this.buffer.push(char);
+      if (this.buffer.length === this.sequenceLength) {
+        // Step 5: Process the buffered sequence
+        this.handleValueSequence(this.buffer);
+        this.resetState();
+      }
+    }
   }
 
-  private handleValueSequence(sequence: number[]) {
-    this.valueSequence.next(sequence);
+  private resetState(): void {
+    this.isEscapeMode = false;
+    this.sequenceLength = null;
+    this.buffer = [];
   }
 
-  public addChar(char: number) {
-    this.charStream.next(char);
+  private handleValueSequence(sequence: number[]): void {
+    this.callbacks.forEach(callback => callback(sequence));
   }
 
   public onValueSequence(callback: (values: number[]) => void): void {
-    this.valueSequence.subscribe(callback);
+    this.callbacks.push(callback);
   }
 }
