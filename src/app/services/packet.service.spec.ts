@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TelemetryService } from './telemetry.service';
+import { PacketService } from './packet.service';
 
 describe('TelemetryService', () => {
-  let service: TelemetryService;
+  let service: PacketService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TelemetryService);
+    service = TestBed.inject(PacketService);
   });
 
   it('should be created', () => {

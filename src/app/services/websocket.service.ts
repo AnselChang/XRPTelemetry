@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { CharStreamHandler } from '../util/char-stream-handler';
+
+export enum WebsocketState {
+  CONNECTED = "CONNECTED",
+  DISCONNECTED = "DISCONNECTED",
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
   private socket?: WebSocket;
-  private socketConnected = false;
+  private state$ = new BehaviorSubject<WebsocketState>(WebsocketState.DISCONNECTED);
   private message$ = new Subject<number[]>();
 
   private readonly encoder = new TextEncoder();
@@ -24,12 +29,20 @@ export class WebsocketService {
     return this.message$.asObservable();
   }
 
+  public onState$(): Observable<WebsocketState> {
+    return this.state$.asObservable();
+  }
+
+  public getState(): WebsocketState {
+    return this.state$.getValue();
+  }
+
   public connectWebsocket() {
     this.socket = new WebSocket("ws://localhost:6789");
 
     this.socket.onopen = (event) => {
       console.log("WebSocket connection established.");
-      this.socketConnected = true;
+      this.state$.next(WebsocketState.CONNECTED);
     };
 
     this.socket.onmessage = (event) => {
@@ -38,13 +51,13 @@ export class WebsocketService {
     };
 
     this.socket.onclose = (event) => {
-      if (this.socketConnected) console.log("WebSocket connection closed. Waiting for new connection...");
-      this.socketConnected = false;
+      if (this.getState() === WebsocketState.CONNECTED) console.log("WebSocket connection closed. Waiting for new connection...");
+      this.state$.next(WebsocketState.DISCONNECTED);
       setTimeout(() => this.connectWebsocket(), 500);
     };
 
     this.socket.onerror = (error) => {
-      if (this.socketConnected) console.log("WebSocket error: ", error);
+      if (this.getState() === WebsocketState.CONNECTED) console.log("WebSocket error: ", error);
     };
   }
 }

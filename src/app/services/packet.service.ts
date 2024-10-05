@@ -2,38 +2,12 @@ import { Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { asciiToUint } from '../util/convert';
 import { Observable, Subject } from 'rxjs';
-
-export enum PacketType {
-  START = "START",
-  METADATA = "METADATA",
-  DATA = "DATA"
-};
-
-export interface Packet {
-  type: PacketType;
-}
-
-export interface StartPacket extends Packet {
-  type: PacketType.START;
-}
-
-export interface MetadataPacket extends Packet {
-  type: PacketType.METADATA;
-  channelIndex: number;
-  channelName: string;
-}
-
-export interface DataPacket extends Packet {
-  type: PacketType.DATA;
-  channelIndex: number;
-  timestamp: number; // in milliseconds
-  data: number | string;
-}
+import { DataPacket, MetadataPacket, Packet, PacketType, StartPacket } from '../models/packet';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TelemetryService {
+export class PacketService {
 
   private packet$ = new Subject<Packet>();
 
@@ -68,18 +42,21 @@ export class TelemetryService {
 
     // Decode the packet based on the opcode
     switch (opcode) {
-      case 127:
-        return this.handleStartPacket(packets);
-      case 126:
-        return this.handleMetadataPacket(packets);
-      default:
-        return this.handleDataPacket(opcode, packets);
+      case 127: return this.handleStartPacket(packets);
+      case 126: return this.handleMetadataPacket(packets);
+      case 125: return this.handleStopPacket(packets);
+      default: return this.handleDataPacket(opcode, packets);
     }
   }
 
   // Start packet has no data. Do not consume any bytes.
   private handleStartPacket(packets: number[]): StartPacket {
     return { type: PacketType.START };
+  }
+
+  // Stop packet has no data. Do not consume any bytes.
+  private handleStopPacket(packets: number[]): Packet {
+    return { type: PacketType.STOP };
   }
 
   // Metadata packet contains a byte for channel index, then a variable-length string to indicate
