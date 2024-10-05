@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
-import { asciiToUint } from '../util/convert';
 import { Observable, Subject } from 'rxjs';
 import { DataPacket, MetadataPacket, Packet, PacketType, StartPacket } from '../models/packet';
 
@@ -82,7 +81,7 @@ export class PacketService {
   private handleDataPacket(channelIndex: number, packets: number[]): DataPacket {
 
     // Get the timestamp by consuming 4 bytes, modifying the packets array
-    const timestamp = asciiToUint(packets.splice(0, 4));
+    const timestamp = parseInt(this.extractString(packets));
     
     // Get the null-terminated data string
     let data: number | string = this.extractString(packets);

@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 import { filter, bufferCount, map, concatMap } from 'rxjs/operators';
-import { asciiToUint } from './convert';
 
 /**
  * CharStreamHandler is a class that processes a stream of ASCII character codes
@@ -8,8 +7,8 @@ import { asciiToUint } from './convert';
  * 
  * The sequence detection process follows these steps:
  * 1. The stream listens for the ESC character (27) as a starting trigger.
- * 2. After detecting ESC, it buffers the next 4 characters from the stream.
- * 3. These 4 characters are converted into an unsigned integer value (using `asciiToUint`), 
+ * 2. After detecting ESC, it buffers the next characters until it finds a null character (0) to get the sequence length.
+ * 3. Sequence length is converted to an unsigned integer (count),
  *    which determines how many subsequent characters will form the next sequence.
  * 4. The stream then buffers the exact number of characters specified by the converted count.
  * 5. Once the full sequence is detected, the class emits the sequence through a `valueSequence` subject,
@@ -24,19 +23,25 @@ export class CharStreamHandler {
 
   public addChar(char: number): void {
     if (!this.isEscapeMode && char === 27) {
+
       // Step 1: Look for the ESC character (27)
       this.isEscapeMode = true;
       this.buffer = [];
+
     } else if (this.isEscapeMode && this.sequenceLength === null) {
-      // Step 2: Buffer the next 4 characters after ESC
-      this.buffer.push(char);
-      if (this.buffer.length === 4) {
-        // Step 3: Convert the 4-character buffer into an unsigned integer (count)
-        this.sequenceLength = asciiToUint(this.buffer);
+      
+      if (char !== 0) {
+        // Step 2: Buffer the next characters until a null character (0) is found
+        this.buffer.push(char);
+      } else {
+        // Step 3: Convert ascii leters into an integer for the sequence length
+        this.sequenceLength = parseInt(String.fromCharCode(...this.buffer), 10);
         console.log(`Detected sequence length: ${this.sequenceLength}`);
         this.buffer = [];
       }
+
     } else if (this.isEscapeMode && this.sequenceLength !== null) {
+
       // Step 4: Buffer the exact number of characters as specified by 'count'
       this.buffer.push(char);
       if (this.buffer.length === this.sequenceLength) {
@@ -44,6 +49,7 @@ export class CharStreamHandler {
         this.handleValueSequence(this.buffer);
         this.resetState();
       }
+
     }
   }
 

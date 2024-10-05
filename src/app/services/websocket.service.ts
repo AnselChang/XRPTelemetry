@@ -38,7 +38,7 @@ export class WebsocketService {
   }
 
   public connectWebsocket() {
-    this.socket = new WebSocket("ws://localhost:6789");
+    this.socket = new WebSocket("ws://localhost:6780");
 
     this.socket.onopen = (event) => {
       console.log("WebSocket connection established.");
@@ -47,7 +47,7 @@ export class WebsocketService {
 
     this.socket.onmessage = (event) => {
       const bytes = this.encoder.encode(event.data);
-      console.log("WebSocket message received: ", bytes, event.data);
+      //console.log("WebSocket message received: ", bytes, event.data);
       for (const byte of bytes) this.streamHandler.addChar(byte);
     };
 
