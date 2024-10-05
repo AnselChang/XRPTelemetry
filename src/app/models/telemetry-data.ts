@@ -6,7 +6,11 @@ export interface TelemetryChannel {
 
 export class TelemetryData {
 
-    private channels: TelemetryChannel[] = [];
+    private channels: TelemetryChannel[];
+
+    constructor() {
+        this.channels = [];
+    }
 
     public addChannel(index: number, name: string): void {
         this.channels.push({ index, name, data: [] });
@@ -48,6 +52,12 @@ export class TelemetryData {
 
     public clearChannels(): void {
         this.channels = [];
+    }
+
+    public copy(): TelemetryData {
+        const copy = new TelemetryData();
+        copy.channels = this.channels.map(c => ({ ...c, data: [...c.data] }));
+        return copy;
     }
 
 }

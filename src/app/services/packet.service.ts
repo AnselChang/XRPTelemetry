@@ -28,7 +28,7 @@ export class PacketService {
     // Decode packets
     while (packets.length > 0) {
       const packet = this.consumePacket(packets);
-      console.log(packet);
+      this.packet$.next(packet);
     }
   }
 

@@ -23,6 +23,7 @@ export class TelemetryDataService {
   ) {
     // On each new message, decode the packets and emit them
     this.packetService.onPacket$().subscribe((packet) => {
+
       switch (packet.type) {
 
         case PacketType.START:
@@ -43,7 +44,10 @@ export class TelemetryDataService {
         case PacketType.STOP:
           this.state$.next(TelemetryState.STOPPED);
           break;
-      } 
+      }
+
+      console.log(packet);
+      console.log(this.data.copy());
     });
   }
 
