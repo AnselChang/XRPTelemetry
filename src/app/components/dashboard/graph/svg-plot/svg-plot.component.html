@@ -1,12 +1,29 @@
 <div class="grid">
     <div class="axis y">
-        <p *ngFor="let y of iterateYAxis()">{{formatYAxisValue(y)}}</p>
+        <p *ngFor="let y of iterateYAxis()" class="prevent-select">{{formatYAxisValue(y)}}</p>
     </div>
-    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_WIDTH" [attr.height]="PLOT_HEIGHT">
+    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_WIDTH" [attr.height]="PLOT_HEIGHT" [attr.viewBox]="viewBox">
+        
+        <!-- draw the axis subdivisions -->
+        <g class="axis-lines">
+            <line *ngFor="let x of iterateXSubdivisions()" [attr.x1]="x" [attr.y1]="0" [attr.x2]="x" [attr.y2]="PLOT_HEIGHT" />
+            <line *ngFor="let y of iterateYSubdivisions()" [attr.x1]="0" [attr.y1]="y" [attr.x2]="PLOT_WIDTH" [attr.y2]="y" />
+        </g>
 
+        
+        <g *ngFor="let channel of channels">
+
+            <!-- draw circle for each point -->
+            <circle *ngFor="let point of channel.points"
+                [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="channel.radius" [attr.fill]="channel.color" />
+
+            <!-- draw line between each point -->
+            <polyline [attr.points]="channel.polyline"
+                [attr.stroke]="channel.color" [attr.stroke-width]="channel.lineThickness" fill="none" />
+        </g>
     </svg>
     <div></div>
     <div class="axis x">
-        <p *ngFor="let timestamp of iterateXAxis()">{{timestampToString(timestamp)}}</p>
+        <p *ngFor="let timestamp of iterateXAxis()" class="prevent-select">{{timestampToString(timestamp)}}</p>
     </div>
 </div>

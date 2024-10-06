@@ -14,6 +14,8 @@ export class GraphComponent implements OnChanges {
   // Maps channel names to visibility
   visibleChannels$ = new BehaviorSubject<{[key in string] : boolean}>({});
 
+  hoveredChannel$ = new BehaviorSubject<string | null>(null);
+
   ngOnChanges(changes: SimpleChanges): void {
     console.log('GraphComponent::ngOnChanges', changes);
     

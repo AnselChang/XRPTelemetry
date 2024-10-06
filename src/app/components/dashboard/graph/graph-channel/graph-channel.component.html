@@ -1,4 +1,4 @@
 <div class="channel" [ngClass]="{'visible': visible}">
     <img class="icon prevent-select" [src]="'assets/icons/' + (visible ? 'visible' : 'invisible') + '.svg'" width="12px">
-    <h1 class="label prevent-select">{{ channel }}</h1>
+    <h1 class="label prevent-select" [ngStyle]="{color: color}">{{ channel }}</h1>
 </div>

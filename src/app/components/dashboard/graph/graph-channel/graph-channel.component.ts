@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChartColor } from 'src/app/util/chart-color';
 
 @Component({
   selector: 'app-graph-channel',
@@ -9,5 +10,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 export class GraphChannelComponent {
   @Input() channel!: string;
   @Input() visible: boolean = true;
+  @Input() color!: ChartColor;
 
 }

@@ -1,6 +1,9 @@
+import { ChartColor } from "../util/chart-color";
+
 export interface TelemetryChannel {
     index: number;
     name: string;
+    color: ChartColor;
     data: { timestamp: number, value: number | string }[];
 }
 
@@ -23,7 +26,11 @@ export class TelemetryData {
     }
 
     public addChannel(index: number, name: string): void {
-        this.channels.push({ index, name, data: [] });
+
+        // Chart color is modulo of the index
+        const color = Object.values(ChartColor)[index % Object.values(ChartColor).length];
+
+        this.channels.push({ index, name, color, data: [] });
     }
 
     public addDataForChannel(channelIndex: number, timestamp: number, value: number | string): void {
@@ -49,6 +56,12 @@ export class TelemetryData {
         const channel = this.channels.find(c => c.name === channelName);
         if (!channel) throw new Error(`Channel ${channelName} not found`);
         return channel.data;
+    }
+
+    public getChannelColor(channelName: string): ChartColor {
+        const channel = this.channels.find(c => c.name === channelName);
+        if (!channel) throw new Error(`Channel ${channelName} not found`);
+        return channel.color;
     }
 
     // Get the data point at or before the given timestamp
@@ -84,6 +97,9 @@ export class TelemetryData {
     public copy(): TelemetryData {
         const copy = new TelemetryData();
         copy.channels = this.channels.map(c => ({ ...c, data: [...c.data] }));
+        copy.latestTimestamp = this.latestTimestamp;
+        copy.minY = this.minY;
+        copy.maxY = this.maxY;
         return copy;
     }
 

@@ -17,14 +17,13 @@
 
     display: flex;
     flex-direction: row;
-
+    gap: 10px;
 }
 
 .channels {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    min-width: 120px;
 }
 
 .content {

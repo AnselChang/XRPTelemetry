@@ -1,9 +1,10 @@
 <div class="graph">
     <div class="channels">
         <app-graph-channel *ngFor="let channel of data.getChannelNames()" (click)="toggleChannelVisibility(channel)" [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)"
-        [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)" />
+        [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)" [color]="data.getChannelColor(channel)"
+        (mouseenter)="hoveredChannel$.next(channel)" (mouseleave)="hoveredChannel$.next(null)" />
     </div>
     <app-svg-plot [data]="data"
-    [visibleChannels]="getVisibleChannelsList((visibleChannels$ | async) ?? {})" />
+    [visibleChannels]="getVisibleChannelsList((visibleChannels$ | async) ?? {})" [hoveredChannel]="hoveredChannel$ | async" />
         
 </div>
