@@ -15,9 +15,6 @@ export class DashboardPageComponent {
   constructor(
     public telemetryDataService: TelemetryDataService,
   ) {
-    telemetryDataService.onData$().subscribe(data => {
-      console.log('DashboardPageComponent::onData$', data);
-    });
   }
 
 }

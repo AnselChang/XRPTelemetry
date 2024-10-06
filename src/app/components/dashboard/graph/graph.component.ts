@@ -17,7 +17,7 @@ export class GraphComponent implements OnChanges {
   hoveredChannel$ = new BehaviorSubject<string | null>(null);
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('GraphComponent::ngOnChanges', changes);
+    console.log('GraphComponent::ngOnChanges');
     
     const visibleChannels = this.visibleChannels$.getValue();
 
@@ -29,6 +29,15 @@ export class GraphComponent implements OnChanges {
         changed = true;
       }
     }
+
+    // If any channels are removed, remove them from the visible channels
+    for (const channel of Object.keys(visibleChannels)) {
+      if (!this.data.getChannelNames().includes(channel)) {
+        delete visibleChannels[channel];
+        changed = true;
+      }
+    }
+
     // if changed, update with a copy of the object
     if (changed) this.visibleChannels$.next({...visibleChannels});
   }

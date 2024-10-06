@@ -33,6 +33,7 @@ export class TelemetryDataService {
 
           case PacketType.START:
             this.data.reset();
+            this.data$.next(this.data.copy());
             this.state$.next(TelemetryState.SENDING);
             break;
           

@@ -28,7 +28,7 @@ export class SvgPlotComponent implements OnChanges {
   @Input() hoveredChannel: string | null = null;
 
   public readonly PLOT_WIDTH = 1000;
-  public readonly PLOT_HEIGHT = 1000;
+  public readonly PLOT_HEIGHT = 600;
 
   private readonly X_AXIS_SUBDIVISIONS = 3;
   private readonly Y_AXIS_SUBDIVISIONS = 4;
@@ -47,10 +47,15 @@ export class SvgPlotComponent implements OnChanges {
 
   ngOnChanges(): void {
 
-    console.log('SvgPlotComponent::ngOnChanges', this.data, this.visibleChannels);
+    console.log('SvgPlotComponent::ngOnChanges');
 
-    this.graphMinY = this.data.getMinY();
-    this.graphMaxY = this.data.getMaxY();
+    // Get the min/max for the visible channels
+    this.graphMinY = this.data.getMinY(this.visibleChannels);
+    this.graphMaxY = this.data.getMaxY(this.visibleChannels);
+
+    // if the min or max is still at the default, set it to 0 or 1
+    if (this.graphMinY === Infinity) this.graphMinY = 0;
+    if (this.graphMaxY === -Infinity) this.graphMaxY = 1;
 
     // round the min and max to the nearest 10^x, with some padding
     const diff = this.graphMaxY - this.graphMinY;
@@ -62,8 +67,6 @@ export class SvgPlotComponent implements OnChanges {
     // at least 1000ms, and at least 5% more than the latest timestamp
     this.graphMaxX = Math.max(1000, this.data.getLatestTimestamp());
     this.graphMinX = 0;
-
-    console.log(`Bounds x: [${this.graphMinX}, ${this.graphMaxX}], y: [${this.graphMinY}, ${this.graphMaxY}]`);
 
     this.calculateChannels();
   }
@@ -82,8 +85,6 @@ export class SvgPlotComponent implements OnChanges {
       ).map(point => this.plot(point.timestamp, point.value as number));
 
       const polyline = points.map(point => `${point.x},${point.y}`).join(' ');
-
-      console.log('SvgPlotComponent::caclulateChannels', this.data.getAllDataForChannel(channel), points);
 
       const hovered = this.hoveredChannel === channel;
       const radius = hovered ? this.HOVERED_CIRCLE_RADIUS : this.CIRCLE_RADIUS;

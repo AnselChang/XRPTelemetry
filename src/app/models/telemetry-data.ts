@@ -5,15 +5,14 @@ export interface TelemetryChannel {
     name: string;
     color: ChartColor;
     data: { timestamp: number, value: number | string }[];
+    minValue: number,
+    maxValue: number
 }
 
 export class TelemetryData {
 
     private channels!: TelemetryChannel[];
     private latestTimestamp!: number;
-    private minY!: number;
-    private maxY!: number;
-
     constructor() {
         this.reset();
     }
@@ -21,8 +20,6 @@ export class TelemetryData {
     public reset(): void {
         this.channels = [];
         this.latestTimestamp = 0;
-        this.minY = 0;
-        this.maxY = 1;
     }
 
     public addChannel(index: number, name: string): void {
@@ -30,7 +27,7 @@ export class TelemetryData {
         // Chart color is modulo of the index
         const color = Object.values(ChartColor)[index % Object.values(ChartColor).length];
 
-        this.channels.push({ index, name, color, data: [] });
+        this.channels.push({ index, name, color, data: [], minValue: Infinity, maxValue: -Infinity });
     }
 
     public addDataForChannel(channelIndex: number, timestamp: number, value: number | string): void {
@@ -43,8 +40,8 @@ export class TelemetryData {
 
         // Update min/max Y values
         if (typeof value === 'number') {
-            if (value < this.minY) this.minY = value;
-            if (value > this.maxY) this.maxY = value;
+            if (value < channel.minValue) channel.minValue = value;
+            if (value > channel.maxValue) channel.maxValue = value;
         }
     }
 
@@ -86,20 +83,24 @@ export class TelemetryData {
         return this.latestTimestamp;
     }
 
-    public getMinY(): number {
-        return this.minY;
+    // Get the min y values for the given channels. If channels not provided, find global min y
+    public getMinY(channels: string[] | null = null): number {
+        if (channels === null) channels = this.getChannelNames();
+        return channels.map(channel => this.channels.find(c => c.name === channel)?.minValue || Infinity)
+            .reduce((min, value) => Math.min(min, value), Infinity);
     }
 
-    public getMaxY(): number {
-        return this.maxY;
+    // Get the max y values for the given channels. If channels not provided, find global max y
+    public getMaxY(channels: string[] | null = null): number {
+        if (channels === null) channels = this.getChannelNames();
+        return channels.map(channel => this.channels.find(c => c.name === channel)?.maxValue || -Infinity)
+            .reduce((max, value) => Math.max(max, value), -Infinity);
     }
 
     public copy(): TelemetryData {
         const copy = new TelemetryData();
         copy.channels = this.channels.map(c => ({ ...c, data: [...c.data] }));
         copy.latestTimestamp = this.latestTimestamp;
-        copy.minY = this.minY;
-        copy.maxY = this.maxY;
         return copy;
     }
 

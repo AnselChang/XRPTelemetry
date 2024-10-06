@@ -36,7 +36,6 @@ export class CharStreamHandler {
       } else {
         // Step 3: Convert ascii leters into an integer for the sequence length
         this.sequenceLength = parseInt(String.fromCharCode(...this.buffer), 10);
-        console.log(`Detected sequence length: ${this.sequenceLength}`);
         this.buffer = [];
       }
 
