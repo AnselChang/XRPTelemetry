@@ -1,0 +1,12 @@
+<div class="grid">
+    <div class="axis y">
+        <p *ngFor="let y of iterateYAxis()">{{formatYAxisValue(y)}}</p>
+    </div>
+    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_WIDTH" [attr.height]="PLOT_HEIGHT">
+
+    </svg>
+    <div></div>
+    <div class="axis x">
+        <p *ngFor="let timestamp of iterateXAxis()">{{timestampToString(timestamp)}}</p>
+    </div>
+</div>

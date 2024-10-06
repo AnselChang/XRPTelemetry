@@ -6,10 +6,20 @@ export interface TelemetryChannel {
 
 export class TelemetryData {
 
-    private channels: TelemetryChannel[];
+    private channels!: TelemetryChannel[];
+    private latestTimestamp!: number;
+    private minY!: number;
+    private maxY!: number;
 
     constructor() {
+        this.reset();
+    }
+
+    public reset(): void {
         this.channels = [];
+        this.latestTimestamp = 0;
+        this.minY = 0;
+        this.maxY = 1;
     }
 
     public addChannel(index: number, name: string): void {
@@ -20,6 +30,15 @@ export class TelemetryData {
         const channel = this.channels.find(c => c.index === channelIndex);
         if (!channel) throw new Error(`Channel ${channelIndex} not found`);
         channel.data.push({ timestamp, value });
+
+        // Update latest timestamp
+        if (timestamp > this.latestTimestamp) this.latestTimestamp = timestamp;
+
+        // Update min/max Y values
+        if (typeof value === 'number') {
+            if (value < this.minY) this.minY = value;
+            if (value > this.maxY) this.maxY = value;
+        }
     }
 
     public getChannelNames(): string[] {
@@ -50,8 +69,16 @@ export class TelemetryData {
         return data[i - 1].value;
     }
 
-    public clearChannels(): void {
-        this.channels = [];
+    public getLatestTimestamp(): number {
+        return this.latestTimestamp;
+    }
+
+    public getMinY(): number {
+        return this.minY;
+    }
+
+    public getMaxY(): number {
+        return this.maxY;
     }
 
     public copy(): TelemetryData {

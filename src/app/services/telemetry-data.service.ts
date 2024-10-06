@@ -32,7 +32,7 @@ export class TelemetryDataService {
         switch (packet.type) {
 
           case PacketType.START:
-            this.data.clearChannels();
+            this.data.reset();
             this.state$.next(TelemetryState.SENDING);
             break;
           

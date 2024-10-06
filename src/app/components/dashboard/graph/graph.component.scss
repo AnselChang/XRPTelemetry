@@ -3,11 +3,13 @@
 :host {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
 }
 
 .graph {
     background-color: $dark;
     border-radius: 10px;
+    box-sizing: border-box;
 
     width: 100%;
     height: 300px;
@@ -22,4 +24,17 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    min-width: 120px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+app-svg-plot {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }

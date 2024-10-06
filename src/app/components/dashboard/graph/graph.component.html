@@ -3,7 +3,7 @@
         <app-graph-channel *ngFor="let channel of data.getChannelNames()" (click)="toggleChannelVisibility(channel)" [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)"
         [channel]="channel" [visible]="getChannelVisibility(visibleChannels$ | async, channel)" />
     </div>
-    <div class="content">
-
-    </div>
+    <app-svg-plot [data]="data"
+    [visibleChannels]="getVisibleChannelsList((visibleChannels$ | async) ?? {})" />
+        
 </div>

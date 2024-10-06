@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TelemetryData } from 'src/app/models/telemetry-data';
 
 @Component({
@@ -39,6 +39,10 @@ export class GraphComponent implements OnChanges {
     const visibleChannels = this.visibleChannels$.getValue();
     visibleChannels[channel] = !visibleChannels[channel];
     this.visibleChannels$.next({...visibleChannels});
+  }
+
+  getVisibleChannelsList(channels: {[key in string] : boolean}): string[] {
+    return Object.keys(channels).filter(channel => channels[channel]);
   }
 
 }

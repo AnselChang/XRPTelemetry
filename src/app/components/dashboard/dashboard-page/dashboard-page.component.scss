@@ -9,7 +9,7 @@
     align-items: center;
 }
 
-.dashboard {
+.dashboard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,10 +21,23 @@
     gap: 30px;
 }
 
+.dashboard {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .panels {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 20px;
     width: 100%;
+}
+
+h1 {
+    font-family: $main-font;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    opacity: 0.8;
 }
