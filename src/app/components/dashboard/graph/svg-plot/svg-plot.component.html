@@ -2,7 +2,8 @@
     <div class="axis y">
         <p *ngFor="let y of iterateYAxis()" class="prevent-select">{{formatYAxisValue(y)}}</p>
     </div>
-    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_WIDTH" [attr.height]="PLOT_HEIGHT" [attr.viewBox]="viewBox">
+    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_WIDTH" [attr.height]="PLOT_HEIGHT"
+    [attr.viewBox]="viewBox" #plot (window:resize)="onResize(plot.getBoundingClientRect())">
         
         <!-- draw the axis subdivisions -->
         <g class="axis-lines">

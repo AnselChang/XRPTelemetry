@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
 import { TelemetryData } from 'src/app/models/telemetry-data';
 import { ChartColor } from 'src/app/util/chart-color';
 
@@ -22,21 +22,22 @@ export interface ChannelPoints {
   styleUrls: ['./svg-plot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SvgPlotComponent implements OnChanges {
+export class SvgPlotComponent implements OnChanges, AfterViewInit {
   @Input() data: TelemetryData = new TelemetryData();
   @Input() visibleChannels: string[] = [];
   @Input() hoveredChannel: string | null = null;
+  @ViewChild('plot') plotView!: ElementRef;
 
-  public readonly PLOT_WIDTH = 1000;
-  public readonly PLOT_HEIGHT = 600;
+  public PLOT_WIDTH = 1000;
+  public PLOT_HEIGHT = 600;
 
   private readonly X_AXIS_SUBDIVISIONS = 3;
   private readonly Y_AXIS_SUBDIVISIONS = 4;
 
-  readonly CIRCLE_RADIUS = 5;
-  readonly HOVERED_CIRCLE_RADIUS = 8;
-  readonly LINE_THICKNESS = 2;
-  readonly HOVERED_LINE_THICKNESS = 4;
+  readonly CIRCLE_RADIUS = 2;
+  readonly HOVERED_CIRCLE_RADIUS = 3;
+  readonly LINE_THICKNESS = 1.5;
+  readonly HOVERED_LINE_THICKNESS = 2;
 
   private graphMinX!: number;
   private graphMaxX!: number;
@@ -44,6 +45,13 @@ export class SvgPlotComponent implements OnChanges {
   private graphMaxY!: number;
 
   channels: ChannelPoints[] = [];
+
+
+  ngAfterViewInit(): void {
+    this.PLOT_WIDTH = this.plotView.nativeElement.clientWidth;
+    this.PLOT_HEIGHT = this.plotView.nativeElement.clientHeight;
+    console.log(`SvgPlotComponent::ngAfterViewInit  ${this.PLOT_WIDTH} x ${this.PLOT_HEIGHT}`);
+  }
 
   ngOnChanges(): void {
 
@@ -56,6 +64,12 @@ export class SvgPlotComponent implements OnChanges {
     // if the min or max is still at the default, set it to 0 or 1
     if (this.graphMinY === Infinity) this.graphMinY = 0;
     if (this.graphMaxY === -Infinity) this.graphMaxY = 1;
+
+    // if the min and max are the same, add some padding
+    if (this.graphMinY === this.graphMaxY) {
+      this.graphMinY -= 1;
+      this.graphMaxY += 1;
+    }
 
     // round the min and max to the nearest 10^x, with some padding
     const diff = this.graphMaxY - this.graphMinY;
@@ -143,6 +157,14 @@ export class SvgPlotComponent implements OnChanges {
 
   get viewBox(): string {
     return `0 0 ${this.PLOT_WIDTH} ${this.PLOT_HEIGHT}`;
+  }
+
+  @HostListener('window:resize', ['$event.target']) 
+  onResize(rect: DOMRect) { 
+    if (rect.width && rect.height && (rect.width !== this.PLOT_WIDTH || rect.height !== this.PLOT_HEIGHT)) {
+      this.PLOT_WIDTH = rect.width;
+      this.PLOT_HEIGHT = rect.height;
+    }
   }
 
 

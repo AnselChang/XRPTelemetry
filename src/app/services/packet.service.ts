@@ -47,7 +47,8 @@ export class PacketService {
       case 127: return this.handleStartPacket(packets);
       case 126: return this.handleMetadataPacket(packets);
       case 125: return this.handleStopPacket(packets);
-      default: return this.handleDataPacket(opcode, packets);
+      case 124: return this.handleDataPacket(packets);
+      default: throw new Error(`Unknown opcode: ${opcode}`);
     }
   }
 
@@ -75,19 +76,33 @@ export class PacketService {
     return { type: PacketType.METADATA, channelIndex, channelName };
   }
 
-  // Data packet contains a a 4-byte timestamp, and a stringified value
-  private handleDataPacket(channelIndex: number, packets: number[]): DataPacket {
+  // Format is [128 - number of pairs] [timestamp] [channel index] [data] [channel index] [data] ...
+  private handleDataPacket(packets: number[]): DataPacket {
+
+    // Get number of pairs by consuming the first byte
+    const numPairs = 128 - packets.shift()!;
 
     // Get the timestamp by consuming 4 bytes, modifying the packets array
     const timestamp = parseInt(this.extractString(packets));
+
+    const dataDict: { [channelIndex: number]: number | string } = {};
+    for (let i = 0; i < numPairs; i++) {
+
+      // Get the channel index
+      const channelIndex = packets.shift();
+      if (channelIndex === undefined) throw new Error("Channel index is undefined");
+
+      // Get the null-terminated data string
+      let data: number | string = this.extractString(packets);
+
+      // Convert the string to a number if possible
+      if (!isNaN(parseFloat(data))) data = parseFloat(data);
+
+      // Map the channel index to the data for it
+      dataDict[channelIndex] = data
+    }
     
-    // Get the null-terminated data string
-    let data: number | string = this.extractString(packets);
-
-    // Convert the string to a number if possible
-    if (!isNaN(parseFloat(data))) data = parseFloat(data);
-
-    return { type: PacketType.DATA, channelIndex, timestamp, data };
+    return { type: PacketType.DATA, timestamp, dataDict };
   }
 
   private extractString(packets: number[]): string {

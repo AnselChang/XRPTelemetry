@@ -21,9 +21,8 @@ export interface MetadataPacket extends Packet {
 
 export interface DataPacket extends Packet {
   type: PacketType.DATA;
-  channelIndex: number;
   timestamp: number; // in milliseconds
-  data: number | string;
+  dataDict: { [channelIndex: number]: number | string };
 }
 
 export interface StopPacket extends Packet {

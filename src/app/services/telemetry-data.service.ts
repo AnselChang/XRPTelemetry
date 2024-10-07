@@ -29,6 +29,8 @@ export class TelemetryDataService {
       // Handle each packet
       for (let packet of packets) {
 
+        console.log(packet);
+
         switch (packet.type) {
 
           case PacketType.START:
@@ -43,12 +45,17 @@ export class TelemetryDataService {
             break;
 
           case PacketType.DATA:
-            const data = packet as DataPacket;
-            this.data.addDataForChannel(data.channelIndex, data.timestamp, data.data);
+            const dataPacket = packet as DataPacket;
+
+            // Add each data point to the data
+            for (const [index, data] of Object.entries(dataPacket.dataDict)) {
+              this.data.addDataForChannel(parseInt(index), dataPacket.timestamp, data);
+            }
             break;
 
           case PacketType.STOP:
             this.state$.next(TelemetryState.STOPPED);
+            console.log(this.data);
             break;
         }
       }
