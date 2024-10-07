@@ -50,7 +50,6 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit(): void {
     this.PLOT_WIDTH = this.plotView.nativeElement.clientWidth;
     this.PLOT_HEIGHT = this.plotView.nativeElement.clientHeight;
-    console.log(`SvgPlotComponent::ngAfterViewInit  ${this.PLOT_WIDTH} x ${this.PLOT_HEIGHT}`);
   }
 
   ngOnChanges(): void {
@@ -73,10 +72,12 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
     // round the min and max to the nearest 10^x, with some padding
     const diff = this.graphMaxY - this.graphMinY;
+    this.graphMaxY += diff * 0.05;
+    this.graphMinY -= diff * 0.05;
     const roundToPlace = Math.floor(Math.log10(diff / this.Y_AXIS_SUBDIVISIONS));
     const round10 = Math.pow(10, roundToPlace);
-    this.graphMinY = Math.floor(this.graphMinY * 0.9 / round10) * round10;
-    this.graphMaxY = Math.ceil(this.graphMaxY * 1.1 / round10) * round10;
+    this.graphMinY = Math.floor(this.graphMinY / round10) * round10;
+    this.graphMaxY = Math.ceil(this.graphMaxY / round10) * round10;
 
     // at least 1000ms, and at least 5% more than the latest timestamp
     this.graphMaxX = Math.max(1000, this.data.getLatestTimestamp());

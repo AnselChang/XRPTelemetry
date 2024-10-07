@@ -86,15 +86,28 @@ export class TelemetryData {
     // Get the min y values for the given channels. If channels not provided, find global min y
     public getMinY(channels: string[] | null = null): number {
         if (channels === null) channels = this.getChannelNames();
-        return channels.map(channel => this.channels.find(c => c.name === channel)?.minValue || Infinity)
-            .reduce((min, value) => Math.min(min, value), Infinity);
+
+        let min = Infinity;
+        for (const channel of channels) {
+            const minValue = this.channels.find(c => c.name === channel)!.minValue;
+            min = Math.min(min, minValue);
+        }
+        return min;
+
     }
 
     // Get the max y values for the given channels. If channels not provided, find global max y
     public getMaxY(channels: string[] | null = null): number {
         if (channels === null) channels = this.getChannelNames();
-        return channels.map(channel => this.channels.find(c => c.name === channel)?.maxValue || -Infinity)
-            .reduce((max, value) => Math.max(max, value), -Infinity);
+
+
+        let max = -Infinity;
+        for (const channel of channels) {
+            const maxValue = this.channels.find(c => c.name === channel)!.maxValue;
+            max = Math.max(max, maxValue);
+        }
+
+        return max;
     }
 
     public copy(): TelemetryData {
