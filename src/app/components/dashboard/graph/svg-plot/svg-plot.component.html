@@ -36,8 +36,8 @@
     <div></div>
     <div class="zoom">
         <mat-slider class="zoom-slider" [min]="graphMinX" [max]="graphMaxX">
-            <input matSliderStartThumb (input)="onMinXChange($event, true)" (valueChange)="onMinXChange($event, false)" [value]="zoomMinX" [matTooltip]="timestampToString(zoomMinX)">
-            <input matSliderEndThumb (input)="onMaxXChange($event, true)" (valueChange)="onMaxXChange($event, false)" [value]="zoomMaxX" [matTooltip]="timestampToString(zoomMaxX)">
+            <input matSliderStartThumb (input)="onMinXChange($event, true)" (valueChange)="onMinXChange($event, false)" [value]="zoomMinX">
+            <input matSliderEndThumb (input)="onMaxXChange($event, true)" (valueChange)="onMaxXChange($event, false)" [value]="zoomMaxX">
           </mat-slider>
     </div>
 </div>

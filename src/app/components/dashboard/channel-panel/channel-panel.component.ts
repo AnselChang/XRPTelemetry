@@ -30,6 +30,11 @@ export class ChannelPanelComponent implements OnChanges {
     if (!this.channel$.getValue() && this.defaultChannel && this.data.getChannelNames().includes(this.defaultChannel)) {
       this.channel$.next(this.defaultChannel);
     }
+
+    // If the channel was set to a channel that doesn't exist in the data, reset it
+    if (this.channel$.getValue() && !this.data.getChannelNames().includes(this.channel$.getValue()!)) {
+      this.channel$.next(undefined);
+    }
   }
 
   setChannel(channel: string | undefined): void {
@@ -39,7 +44,7 @@ export class ChannelPanelComponent implements OnChanges {
   // Find the latest data point no later than the current timestamp
   getChannelData(channel: string | null | undefined): ChannelData | undefined {
 
-    if (!channel) {
+    if (!channel || !this.data.getChannelNames().includes(channel)) {
       return undefined;
     }
 
