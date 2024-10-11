@@ -23,6 +23,8 @@ export class DashboardPageComponent implements OnDestroy {
   private animationFrameId: number | null = null;
   private lastFrameTime: number | null = null;
 
+  readonly DEFAULT_CHANNELS = ["left_distance", "right_distance", "imu_heading", "rangefinder_distance", "left_reflectance", "right_reflectance"]
+
   constructor(
     public telemetryDataService: TelemetryDataService,
   ) {

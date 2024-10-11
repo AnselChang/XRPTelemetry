@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TelemetryData } from 'src/app/models/telemetry-data';
 import { ChartColor } from 'src/app/util/chart-color';
@@ -24,7 +24,7 @@ export interface ChannelPoints {
   styleUrls: ['./svg-plot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SvgPlotComponent implements OnChanges, AfterViewInit {
+export class SvgPlotComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() data: TelemetryData = new TelemetryData();
   @Input() visibleChannelsMap: {[key in string] : boolean} = {};
   @Input() hoveredChannel: string | null = null;
@@ -53,6 +53,8 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
   public zoomMinX!: number;
   public zoomMaxX!: number;
 
+  lastChange = new Date();
+
   channels$ = new BehaviorSubject<ChannelPoints[]>([]);
 
   readonly timestampToString = timestampToString;
@@ -61,6 +63,10 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit(): void {
     this.PLOT_WIDTH = this.plotView.nativeElement.clientWidth;
     this.PLOT_HEIGHT = this.plotView.nativeElement.clientHeight;
+  }
+
+  ngOnInit(): void {
+    this.onDataChanges();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -192,15 +198,23 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  onMinXChange(event: Event): void {
-    this.zoomMinX = parseInt((event.target as HTMLInputElement).value);
+  onMinXChange(event: Event | number, skip: boolean): void {
 
+    // if skip flag is on, and less than 100ms since last change, skip. This greatly reduces computation time
+    if (skip && new Date().getTime() - this.lastChange.getTime() < 100) return;
+
+    this.lastChange = new Date();
+    this.zoomMinX = typeof event === 'number' ? event : parseInt((event.target as HTMLInputElement).value);
     this.calculateChannels();
   }
 
-  onMaxXChange(event: Event): void {
-    this.zoomMaxX = parseInt((event.target as HTMLInputElement).value);
+  onMaxXChange(event: Event | number, skip: boolean): void {
 
+    // if skip flag is on, and less than 100ms since last change, skip. This greatly reduces computation time
+    if (skip && new Date().getTime() - this.lastChange.getTime() < 100) return;
+
+    this.lastChange = new Date();
+    this.zoomMaxX = typeof event === 'number' ? event : parseInt((event.target as HTMLInputElement).value);
     this.calculateChannels();
   }
 

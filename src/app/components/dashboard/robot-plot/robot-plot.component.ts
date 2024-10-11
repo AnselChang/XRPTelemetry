@@ -59,7 +59,7 @@ export class RobotPlotComponent implements OnChanges {
       this.onDataChange();
     }
 
-    if (changes['currentTimestamp']) {
+    if (changes['currentTimestamp'] && this.positions.length > 0) {
       // Find the closest position to the current timestamp
       this.currentTimestamp = changes['currentTimestamp'].currentValue;
       this.closestPositionTimestamp = this.positions.reduce((prev, curr) => {

@@ -29,12 +29,10 @@
         <div class="panels-container">
             <h1>Telemetry channels</h1>
             <div class="panels">
-                <app-channel-panel title="Channel 1" color="#FF0000"></app-channel-panel>
-                <app-channel-panel title="Channel 2" color="#00FF00"></app-channel-panel>
-                <app-channel-panel title="Channel 3" color="#0000FF"></app-channel-panel>
-                <app-channel-panel title="Channel 4" color="#FFFF00"></app-channel-panel>
-                <app-channel-panel title="Channel 5" color="#FF00FF"></app-channel-panel>
-                <app-channel-panel title="Channel 6" color="#00FFFF"></app-channel-panel>
+                <app-channel-panel *ngFor="let channel of DEFAULT_CHANNELS"
+                    [defaultChannel]="channel"
+                    [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA"
+                    [currentTimestamp]="(currentTimestamp$ | async) ?? 0" />
             </div>
         </div>
     </div>

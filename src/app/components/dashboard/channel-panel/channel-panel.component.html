@@ -1,3 +1,14 @@
 <div class="panel">
-    
+    <img src="assets/icons/settings.svg" width="12px" [matMenuTriggerFor]="menu">
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="setChannel(undefined)">(none)</button>
+        <button mat-menu-item *ngFor="let channel of data.getChannelNames()" (click)="setChannel(channel)">{{channel}}</button>
+      </mat-menu>
+    <ng-container *ngIf="getChannelData(channel$ | async) as channelData">
+        <p class="label">{{channelData.name}}</p>
+        <p class="value" [ngStyle]="{'color': channelData.color}">{{channelData.value}}</p>
+        <p class="timestamp">Received at {{timestampToString(channelData.timestamp)}}</p>
+    </ng-container>
 </div>
+
+
