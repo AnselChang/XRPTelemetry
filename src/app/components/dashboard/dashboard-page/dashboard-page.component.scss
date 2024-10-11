@@ -15,9 +15,10 @@
     align-items: center;
 
     width: 80%;
+    max-width: 850px;
     height: 100%;
 
-    padding-top: 50px;
+    padding-top: 10px;
     gap: 30px;
 }
 
@@ -34,10 +35,98 @@
     width: 100%;
 }
 
+.timestamp-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 25px;
+    height: 90px;
+}
+
+.timestamp-panel {
+    background-color: $dark;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    width: 350px;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.playback-panel {
+    background-color: $dark;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+
+    padding-inline: 25px;
+}
+
+.media-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 13px;
+}
+
+.playback-slider-container {
+    width: 80%;
+    margin-right: 20px;
+}
+
+.playback-slider {
+    width: 100%;
+}
+
+.media-buttons img {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.media-buttons img:hover {
+    opacity: 1;
+}
+
+.media-buttons img:active {
+    opacity: 0.4;
+}
+
 h1 {
     font-family: $main-font;
     font-size: 12px;
     font-weight: 500;
     color: white;
     opacity: 0.8;
+
+    margin-top: 30px;
+    margin-bottom: 8px;
+}
+
+.current-timestamp {
+    font-family: $main-font;
+    font-size: 35px;
+    color: white;
+    font-weight: 500;
+    margin: 0;
+}
+
+.latest-timestamp {
+    font-family: $main-font;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    margin: 0;
 }

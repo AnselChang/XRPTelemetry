@@ -8,6 +8,26 @@
         <app-channel-panel title="Channel 5" color="#FF00FF"></app-channel-panel>
         <app-channel-panel title="Channel 6" color="#00FFFF"></app-channel-panel>
     </div> -->
+    <h1>Current Timestamp</h1>
+    <div class="timestamp-row">
+        <div class="timestamp-panel">
+            <p class="current-timestamp">{{timestampToString(currentTimestamp$ | async)}}</p>
+            <p class="latest-timestamp">Run ends at {{timestampToString(latestTimestamp$ | async)}}</p>
+        </div>
+        <div class="playback-panel">
+            <div class="media-buttons">
+                <img src="assets/media/left.svg" height="15px"/>
+                <img [src]="'assets/media/' + (isPlaying ? 'pause' : 'play') + '.svg'" width="14px" (click)="togglePlay()"/>
+                <img src="assets/media/right.svg" height="15px"/>
+            </div>
+            <div class="playback-slider-container">
+                <mat-slider class="playback-slider" [min]="0" [max]="latestTimestamp$ | async">
+                    <input matSliderThumb [value]="currentTimestamp$ | async" (input)="onPlaybackSlider($event)">
+                </mat-slider>
+            </div>
+            
+        </div>
+    </div>
     <h1>Telemetry plot</h1>
     <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" />
 </div>

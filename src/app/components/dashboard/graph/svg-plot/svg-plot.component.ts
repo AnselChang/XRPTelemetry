@@ -1,6 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { TelemetryData } from 'src/app/models/telemetry-data';
 import { ChartColor } from 'src/app/util/chart-color';
+import { timestampToString } from 'src/app/util/timestamp';
 
 export interface Point {
   x: number;
@@ -24,7 +26,7 @@ export interface ChannelPoints {
 })
 export class SvgPlotComponent implements OnChanges, AfterViewInit {
   @Input() data: TelemetryData = new TelemetryData();
-  @Input() visibleChannels: string[] = [];
+  @Input() visibleChannelsMap: {[key in string] : boolean} = {};
   @Input() hoveredChannel: string | null = null;
   @ViewChild('plot') plotView!: ElementRef;
 
@@ -39,12 +41,19 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
   readonly LINE_THICKNESS = 1.5;
   readonly HOVERED_LINE_THICKNESS = 2;
 
-  private graphMinX!: number;
-  private graphMaxX!: number;
+  private visibleChannels: string[] = [];
+
+  public graphMinX!: number;
+  public graphMaxX!: number;
   private graphMinY!: number;
   private graphMaxY!: number;
 
-  channels: ChannelPoints[] = [];
+  public zoomMinX!: number;
+  public zoomMaxX!: number;
+
+  channels$ = new BehaviorSubject<ChannelPoints[]>([]);
+
+  readonly timestampToString = timestampToString;
 
 
   ngAfterViewInit(): void {
@@ -52,9 +61,19 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
     this.PLOT_HEIGHT = this.plotView.nativeElement.clientHeight;
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
 
-    console.log('SvgPlotComponent::ngOnChanges');
+    if (changes['data'] || changes['visibleChannels']) {
+      this.onDataChanges();
+    }
+    console.log('Changes', changes);
+    
+  }
+
+  private onDataChanges() {
+    console.log('Data changes');
+
+    this.visibleChannels = Object.keys(this.visibleChannelsMap).filter(channel => this.visibleChannelsMap[channel]);
 
     // Get the min/max for the visible channels
     this.graphMinY = this.data.getMinY(this.visibleChannels);
@@ -83,13 +102,17 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
     this.graphMaxX = Math.max(1000, this.data.getLatestTimestamp());
     this.graphMinX = 0;
 
+    this.zoomMaxX = this.graphMaxX;
+    this.zoomMinX = this.graphMinX;
+
     this.calculateChannels();
+
   }
 
   // Calculate the points for each channel
   calculateChannels(): void {
 
-    this.channels = this.visibleChannels.map((channel, index) => {
+    let channels = this.visibleChannels.map((channel, index) => {
 
       // color is modulo of the index
       const color = this.data.getChannelColor(channel);
@@ -109,20 +132,14 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
     });
 
     // Filter out channels with no points
-    this.channels = this.channels.filter(channel => channel.points.length > 0);
-  }
+    channels = channels.filter(channel => channel.points.length > 0);
 
-  // return in format "MM:SS.sss"
-  timestampToString(timestamp: number): string {
-    const minutes = Math.floor(timestamp / 60000);
-    const seconds = Math.floor((timestamp % 60000) / 1000);
-    const milliseconds = Math.floor(timestamp % 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+    this.channels$.next(channels);
   }
 
   // Given a timestamp and a data value, return a point in svg coordinate frame
   plot(timestamp: number, value: number): Point {
-    const x = (timestamp - this.graphMinX) / (this.graphMaxX - this.graphMinX) * this.PLOT_WIDTH;
+    const x = (timestamp - this.zoomMinX) / (this.zoomMaxX - this.zoomMinX) * this.PLOT_WIDTH;
     const y = (this.graphMaxY - value) / (this.graphMaxY - this.graphMinY) * this.PLOT_HEIGHT;
     return {x, y};
   }
@@ -130,8 +147,8 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
   // iterate from 0 to getMaxTimestamp() in X_AXIS_SUBDIVISIONS steps
   iterateXAxis(): number[] {
-    const step = this.graphMaxX / this.X_AXIS_SUBDIVISIONS;
-    return Array.from({length: this.X_AXIS_SUBDIVISIONS + 1}, (_, i) => i * step);
+    const step = (this.zoomMaxX - this.zoomMinX) / this.X_AXIS_SUBDIVISIONS;
+    return Array.from({length: this.X_AXIS_SUBDIVISIONS + 1}, (_, i) => this.zoomMinX + i * step);
   }
 
   // iterate from 0 t PLOT_WIDTH in X_AXIS_SUBDIVISIONS steps
@@ -168,5 +185,18 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  onMinXChange(event: Event): void {
+    this.zoomMinX = parseInt((event.target as HTMLInputElement).value);
+    console.log('MinX', this.zoomMinX);
+
+    this.calculateChannels();
+  }
+
+  onMaxXChange(event: Event): void {
+    this.zoomMaxX = parseInt((event.target as HTMLInputElement).value);
+    console.log('MaxX', this.zoomMaxX);
+
+    this.calculateChannels();
+  }
 
 }

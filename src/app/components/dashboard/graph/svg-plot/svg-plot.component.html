@@ -12,7 +12,7 @@
         </g>
 
         
-        <g *ngFor="let channel of channels">
+        <g *ngFor="let channel of (channels$ | async)">
 
             <!-- draw circle for each point -->
             <circle *ngFor="let point of channel.points"
@@ -26,5 +26,13 @@
     <div></div>
     <div class="axis x">
         <p *ngFor="let timestamp of iterateXAxis()" class="prevent-select">{{timestampToString(timestamp)}}</p>
+    </div>
+    <div class="zoom-upper-padding"></div>
+    <div></div>
+    <div class="zoom">
+        <mat-slider class="zoom-slider" [min]="graphMinX" [max]="graphMaxX">
+            <input matSliderStartThumb (input)="onMinXChange($event)" [value]="zoomMinX" [matTooltip]="timestampToString(zoomMinX)">
+            <input matSliderEndThumb (input)="onMaxXChange($event)" [value]="zoomMaxX" [matTooltip]="timestampToString(zoomMaxX)">
+          </mat-slider>
     </div>
 </div>

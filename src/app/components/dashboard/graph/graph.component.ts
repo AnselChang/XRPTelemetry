@@ -52,8 +52,4 @@ export class GraphComponent implements OnChanges {
     this.visibleChannels$.next({...visibleChannels});
   }
 
-  getVisibleChannelsList(channels: {[key in string] : boolean}): string[] {
-    return Object.keys(channels).filter(channel => channels[channel]);
-  }
-
 }

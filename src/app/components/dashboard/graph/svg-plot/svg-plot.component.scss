@@ -5,10 +5,11 @@
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
+    padding-bottom: 0px;
 
     display: grid;
     grid-template-columns: 40px 1fr;
-    grid-template-rows: 1fr 15px;
+    grid-template-rows: 1fr 15px 10px 20px;
 }
 
 .plot {
@@ -48,4 +49,18 @@
     stroke: white;
     stroke-width: 0.5;
     opacity: 0.5;
+}
+
+.zoom-upper-padding {
+    grid-column-end: span 2;
+}
+
+.zoom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.zoom-slider {
+    width: 100%;
 }
