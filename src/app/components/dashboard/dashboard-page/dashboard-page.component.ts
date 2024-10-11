@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Host, HostListener, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TelemetryData } from 'src/app/models/telemetry-data';
 import { TelemetryDataService } from 'src/app/services/telemetry-data.service';
@@ -80,6 +80,51 @@ export class DashboardPageComponent implements OnDestroy {
     // Tail recuring call to requestAnimationFrame
     if (this.isPlaying) this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
   };
+
+  // Detect left/right arrow key presses, and space to play/pause
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowLeft') {
+      this.left();
+    } else if (event.key === 'ArrowRight') {
+      this.right();
+    } else if (event.key === ' ') {
+      this.togglePlay();
+    }
+  }
+  
+  left() {
+    this.stopPlaying();
+
+    const timestamps = this.telemetryDataService.getData().getOrderedTimestamps();
+    const currentTimestamp = this.currentTimestamp$.getValue();
+
+    // Find the biggest timestamp in the timestamps array that is less than the current timestamp.
+    const newTimestamp = timestamps.reduce((acc, val) => {
+      if (val < currentTimestamp) return val;
+      return acc;
+    }, 0);
+
+    this.currentTimestamp$.next(newTimestamp);
+  }
+
+  right() {
+    this.stopPlaying();
+
+    const timestamps = this.telemetryDataService.getData().getOrderedTimestamps();
+    const currentTimestamp = this.currentTimestamp$.getValue();
+
+    // Find the smallest timestamp in the timestamps array that is greater than the current timestamp.
+    let newTimestamp = timestamps[timestamps.length - 1];
+    for (const timestamp of timestamps) {
+      if (timestamp > currentTimestamp) {
+        newTimestamp = timestamp;
+        break;
+      }
+    }
+
+    this.currentTimestamp$.next(newTimestamp);
+  }
 
   private stopPlaying() {
     if (this.animationFrameId !== null) {

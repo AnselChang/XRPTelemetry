@@ -28,6 +28,8 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
   @Input() data: TelemetryData = new TelemetryData();
   @Input() visibleChannelsMap: {[key in string] : boolean} = {};
   @Input() hoveredChannel: string | null = null;
+  @Input() currentTimestamp: number = 0;
+
   @ViewChild('plot') plotView!: ElementRef;
 
   public PLOT_WIDTH = 1000;
@@ -139,9 +141,17 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
   // Given a timestamp and a data value, return a point in svg coordinate frame
   plot(timestamp: number, value: number): Point {
-    const x = (timestamp - this.zoomMinX) / (this.zoomMaxX - this.zoomMinX) * this.PLOT_WIDTH;
-    const y = (this.graphMaxY - value) / (this.graphMaxY - this.graphMinY) * this.PLOT_HEIGHT;
+    const x = this.plotX(timestamp);
+    const y = this.plotY(value);
     return {x, y};
+  }
+
+  plotX(timestamp: number): number {
+    return (timestamp - this.zoomMinX) / (this.zoomMaxX - this.zoomMinX) * this.PLOT_WIDTH;
+  }
+
+  plotY(value: number): number {
+    return (this.graphMaxY - value) / (this.graphMaxY - this.graphMinY) * this.PLOT_HEIGHT;
   }
 
 

@@ -5,6 +5,6 @@
         (mouseenter)="hoveredChannel$.next(channel)" (mouseleave)="hoveredChannel$.next(null)" />
     </div>
     <app-svg-plot [data]="data"
-    [visibleChannelsMap]="(visibleChannels$ | async) ?? {}" [hoveredChannel]="hoveredChannel$ | async" />
+    [visibleChannelsMap]="(visibleChannels$ | async) ?? {}" [hoveredChannel]="hoveredChannel$ | async" [currentTimestamp]="currentTimestamp" />
         
 </div>

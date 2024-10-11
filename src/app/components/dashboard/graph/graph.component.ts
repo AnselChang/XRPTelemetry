@@ -10,6 +10,7 @@ import { TelemetryData } from 'src/app/models/telemetry-data';
 })
 export class GraphComponent implements OnChanges {
   @Input() data: TelemetryData = new TelemetryData();
+  @Input() currentTimestamp: number = 0;
 
   // Maps channel names to visibility
   visibleChannels$ = new BehaviorSubject<{[key in string] : boolean}>({});

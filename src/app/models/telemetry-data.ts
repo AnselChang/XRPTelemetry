@@ -13,6 +13,9 @@ export class TelemetryData {
 
     private channels!: TelemetryChannel[];
     private latestTimestamp!: number;
+
+    private cachedOrderedTimestamps: number[] | null = null;
+
     constructor() {
         this.reset();
     }
@@ -20,6 +23,26 @@ export class TelemetryData {
     public reset(): void {
         this.channels = [];
         this.latestTimestamp = 0;
+        this.cachedOrderedTimestamps = null;
+    }
+
+    // Orders timestamps from all channels and removes duplicates, ordered from smallest to largest
+    private _getOrderedTimestamps(): number[] {
+        const timestamps = new Set<number>();
+        for (const channel of this.channels) {
+            for (const data of channel.data) {
+                timestamps.add(data.timestamp);
+            }
+        }
+        return Array.from(timestamps).sort((a, b) => a - b);
+    }
+
+    // Get all timestamps in the data set, ordered. This is cached for performance
+    public getOrderedTimestamps(): number[] {
+        if (this.cachedOrderedTimestamps === null) {
+            this.cachedOrderedTimestamps = this._getOrderedTimestamps();
+        }
+        return this.cachedOrderedTimestamps;
     }
 
     public addChannel(index: number, name: string): void {
@@ -43,6 +66,9 @@ export class TelemetryData {
             if (value < channel.minValue) channel.minValue = value;
             if (value > channel.maxValue) channel.maxValue = value;
         }
+
+        // Clear the cached ordered timestamps
+        this.cachedOrderedTimestamps = null;
     }
 
     public getChannelNames(): string[] {

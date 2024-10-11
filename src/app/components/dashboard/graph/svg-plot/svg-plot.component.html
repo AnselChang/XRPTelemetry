@@ -22,6 +22,11 @@
             <polyline [attr.points]="channel.polyline"
                 [attr.stroke]="channel.color" [attr.stroke-width]="channel.lineThickness" fill="none" />
         </g>
+
+        <!-- Draw current timestamp red line -->
+        <line [attr.x1]="plotX(currentTimestamp)" [attr.y1]="0"
+            [attr.x2]="plotX(currentTimestamp)" [attr.y2]="PLOT_HEIGHT" stroke="red"/>
+
     </svg>
     <div></div>
     <div class="axis x">

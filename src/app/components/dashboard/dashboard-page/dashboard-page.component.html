@@ -16,9 +16,9 @@
         </div>
         <div class="playback-panel">
             <div class="media-buttons">
-                <img src="assets/media/left.svg" height="15px"/>
+                <img src="assets/media/left.svg" height="15px" (click)="left()"/>
                 <img [src]="'assets/media/' + (isPlaying ? 'pause' : 'play') + '.svg'" width="14px" (click)="togglePlay()"/>
-                <img src="assets/media/right.svg" height="15px"/>
+                <img src="assets/media/right.svg" height="15px" (click)="right()"/>
             </div>
             <div class="playback-slider-container">
                 <mat-slider class="playback-slider" [min]="0" [max]="latestTimestamp$ | async">
@@ -29,6 +29,6 @@
         </div>
     </div>
     <h1>Telemetry plot</h1>
-    <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" />
+    <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" [currentTimestamp]="(currentTimestamp$ | async) ?? 0"/>
 </div>
 </div>
