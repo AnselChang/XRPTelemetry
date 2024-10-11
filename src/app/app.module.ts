@@ -15,6 +15,7 @@ import { ChannelPanelComponent } from './components/dashboard/channel-panel/chan
 import { GraphChannelComponent } from './components/dashboard/graph/graph-channel/graph-channel.component';
 import { StatusComponent } from './components/sidebar/status/status.component';
 import { SvgPlotComponent } from './components/dashboard/graph/svg-plot/svg-plot.component';
+import { RobotPlotComponent } from './components/dashboard/robot-plot/robot-plot.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SvgPlotComponent } from './components/dashboard/graph/svg-plot/svg-plot
     GraphChannelComponent,
     StatusComponent,
     SvgPlotComponent,
+    RobotPlotComponent,
   ],
   imports: [
     BrowserModule,

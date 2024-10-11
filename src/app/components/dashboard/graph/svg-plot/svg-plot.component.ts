@@ -67,13 +67,10 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
     if (changes['data'] || changes['visibleChannels']) {
       this.onDataChanges();
-    }
-    console.log('Changes', changes);
-    
+    }    
   }
 
   private onDataChanges() {
-    console.log('Data changes');
 
     this.visibleChannels = Object.keys(this.visibleChannelsMap).filter(channel => this.visibleChannelsMap[channel]);
 
@@ -197,14 +194,12 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
   onMinXChange(event: Event): void {
     this.zoomMinX = parseInt((event.target as HTMLInputElement).value);
-    console.log('MinX', this.zoomMinX);
 
     this.calculateChannels();
   }
 
   onMaxXChange(event: Event): void {
     this.zoomMaxX = parseInt((event.target as HTMLInputElement).value);
-    console.log('MaxX', this.zoomMaxX);
 
     this.calculateChannels();
   }

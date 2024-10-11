@@ -1,9 +1,11 @@
 @import "../../../../styles.scss";
 
-.panel {
+
+.robot-plot {
     background-color: $dark;
     border-radius: 10px;
+    box-sizing: border-box;
 
-    width: 100%;
-    height: 100%;
+    width: 200px;
+    height: 200px;
 }
