@@ -24,7 +24,7 @@
     <div class="content-row">
         <div>
             <h1>Robot Position</h1>
-            <app-robot-plot />
+            <app-robot-plot [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" [currentTimestamp]="(currentTimestamp$ | async) ?? 0"/>
         </div>
         <div class="panels-container">
             <h1>Telemetry channels</h1>

@@ -1,10 +1,16 @@
 import { ChartColor } from "../util/chart-color";
 
+export interface ChannelDataPoint {
+    timestamp: number;
+    value: number | string;
+}
+
+
 export interface TelemetryChannel {
     index: number;
     name: string;
     color: ChartColor;
-    data: { timestamp: number, value: number | string }[];
+    data: ChannelDataPoint[];
     minValue: number,
     maxValue: number
 }
@@ -75,7 +81,7 @@ export class TelemetryData {
         return this.channels.map(c => c.name);
     }
 
-    public getAllDataForChannel(channelName: string): { timestamp: number, value: number | string }[] {
+    public getAllDataForChannel(channelName: string): ChannelDataPoint[] {
         const channel = this.channels.find(c => c.name === channelName);
         if (!channel) throw new Error(`Channel ${channelName} not found`);
         return channel.data;

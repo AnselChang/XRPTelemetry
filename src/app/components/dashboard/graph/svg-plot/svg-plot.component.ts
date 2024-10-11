@@ -65,7 +65,7 @@ export class SvgPlotComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    if (changes['data'] || changes['visibleChannels']) {
+    if (changes['data'] || changes['visibleChannelsMap']) {
       this.onDataChanges();
     }    
   }

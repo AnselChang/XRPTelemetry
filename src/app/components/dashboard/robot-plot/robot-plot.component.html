@@ -1,3 +1,18 @@
 <div class="robot-plot">
-    
+    <svg class="plot" preserveAspectRatio="none" [attr.width]="PLOT_SIZE" [attr.height]="PLOT_SIZE" [attr.viewBox]="viewBox">
+
+        <!-- Draw each position of the robot -->
+        <g *ngFor="let position of positions">
+
+            <!-- draw circle for each point -->
+            <circle [matTooltip]="positionTooltip(position)"
+            [attr.cx]="plotX(position.x)" [attr.cy]="plotY(position.y)" [attr.r]="POINT_RAIDUS" [attr.fill]="positionColor(position)" />
+
+            <!-- Draw closest position line -->
+            <line *ngIf="closestPositionLine" [attr.x1]="closestPositionLine.x1" [attr.y1]="closestPositionLine.y1"
+                [attr.x2]="closestPositionLine.x2" [attr.y2]="closestPositionLine.y2" stroke="red" stroke-width="2" />
+
+        </g>
+
+    </svg>
 </div>
