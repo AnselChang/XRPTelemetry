@@ -21,6 +21,9 @@
         </div>
     </div>
 
+    <h1>Telemetry plot</h1>
+    <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" [currentTimestamp]="(currentTimestamp$ | async) ?? 0"/>
+
     <div class="content-row">
         <div>
             <h1>Robot Position</h1>
@@ -36,8 +39,5 @@
             </div>
         </div>
     </div>
-
-    <h1>Telemetry plot</h1>
-    <app-graph [data]="(telemetryDataService.onData$() | async) ?? DEFAULT_DATA" [currentTimestamp]="(currentTimestamp$ | async) ?? 0"/>
 </div>
 </div>

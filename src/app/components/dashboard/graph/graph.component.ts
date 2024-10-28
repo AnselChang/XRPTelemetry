@@ -18,7 +18,6 @@ export class GraphComponent implements OnChanges {
   hoveredChannel$ = new BehaviorSubject<string | null>(null);
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('GraphComponent::ngOnChanges');
     
     const visibleChannels = this.visibleChannels$.getValue();
 

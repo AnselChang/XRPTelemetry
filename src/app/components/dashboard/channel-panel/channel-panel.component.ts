@@ -31,10 +31,10 @@ export class ChannelPanelComponent implements OnChanges {
       this.channel$.next(this.defaultChannel);
     }
 
-    // If the channel was set to a channel that doesn't exist in the data, reset it
-    if (this.channel$.getValue() && !this.data.getChannelNames().includes(this.channel$.getValue()!)) {
-      this.channel$.next(undefined);
-    }
+    // // If the channel was set to a channel that doesn't exist in the data, reset it
+    // if (this.channel$.getValue() && !this.data.getChannelNames().includes(this.channel$.getValue()!)) {
+    //   this.channel$.next(undefined);
+    // }
   }
 
   setChannel(channel: string | undefined): void {
