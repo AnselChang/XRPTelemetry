@@ -9,12 +9,18 @@ export interface Point {
   y: number;
 }
 
+export interface PointWithInfo {
+  point: Point;
+  timestamp: number;
+  value: number;
+}
+
 export interface ChannelPoints {
   channel: string;
   color: ChartColor;
   radius: number;
   lineThickness: number;
-  points: Point[];
+  points: PointWithInfo[];
   polyline: string;
 }
 
@@ -114,6 +120,11 @@ export class SvgPlotComponent implements OnInit, OnChanges, AfterViewInit {
 
   }
 
+  getTooltip(channel: ChannelPoints, point: PointWithInfo): string {
+    // ex. (0:23:46) reflectance=45.678
+    return `(${this.timestampToString(point.timestamp)}) ${channel.channel}=${point.value.toFixed(3)}`;
+  }
+
   // Calculate the points for each channel
   calculateChannels(): void {
 
@@ -125,9 +136,13 @@ export class SvgPlotComponent implements OnInit, OnChanges, AfterViewInit {
       // filter to only points with numeric values
       const points = this.data.getAllDataForChannel(channel).filter(
         point => typeof point.value === 'number'
-      ).map(point => this.plot(point.timestamp, point.value as number));
+      ).map(point => ({
+        point: this.plot(point.timestamp, point.value as number),
+        timestamp: point.timestamp,
+        value: point.value as number
+      }));
 
-      const polyline = points.map(point => `${point.x},${point.y}`).join(' ');
+      const polyline = points.map(point => `${point.point.x},${point.point.y}`).join(' ');
 
       const hovered = this.hoveredChannel === channel;
       const radius = hovered ? this.HOVERED_CIRCLE_RADIUS : this.CIRCLE_RADIUS;

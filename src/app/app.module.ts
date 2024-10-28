@@ -19,6 +19,8 @@ import { GraphChannelComponent } from './components/dashboard/graph/graph-channe
 import { StatusComponent } from './components/sidebar/status/status.component';
 import { SvgPlotComponent } from './components/dashboard/graph/svg-plot/svg-plot.component';
 import { RobotPlotComponent } from './components/dashboard/robot-plot/robot-plot.component';
+import { TooltipDirective } from './directives/tooltip.directive';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { RobotPlotComponent } from './components/dashboard/robot-plot/robot-plot
     StatusComponent,
     SvgPlotComponent,
     RobotPlotComponent,
+    TooltipDirective,
+    TooltipComponent,
   ],
   imports: [
     BrowserModule,

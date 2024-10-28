@@ -15,8 +15,8 @@
         <g *ngFor="let channel of (channels$ | async)">
 
             <!-- draw circle for each point -->
-            <circle *ngFor="let point of channel.points"
-                [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="channel.radius" [attr.fill]="channel.color" />
+            <circle *ngFor="let point of channel.points" [tooltip]="getTooltip(channel, point)"
+                [attr.cx]="point.point.x" [attr.cy]="point.point.y" [attr.r]="channel.radius" [attr.fill]="channel.color" />
 
             <!-- draw line between each point -->
             <polyline [attr.points]="channel.polyline"
