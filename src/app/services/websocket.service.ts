@@ -38,7 +38,7 @@ export class WebsocketService {
   }
 
   public connectWebsocket() {
-    this.socket = new WebSocket("ws://localhost:6780");
+    this.socket = new WebSocket("ws://localhost:6789");
 
     this.socket.onopen = (event) => {
       console.log("WebSocket connection established.");
